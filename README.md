@@ -69,3 +69,6 @@ csv-data-quality-checker/
 
 ## Batasan
 Versi awal ini memeriksa duplikasi berdasarkan kesamaan seluruh kolom. Data tidak secara otomatis dibersihkan atau diubah.
+
+## link file
+https://pembaca-nilai-csv-daffathr.streamlit.app/
