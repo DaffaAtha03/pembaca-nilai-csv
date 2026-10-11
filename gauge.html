@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root { --ink:#12233F; --muted:#5B6B82; --track:#E3E9F1; }
+  * { box-sizing: border-box; }
+  html, body { margin:0; background:transparent; font-family:"IBM Plex Sans", system-ui, sans-serif; color:var(--ink); }
+  .card { display:flex; align-items:center; gap:22px; height:208px; padding:18px 22px;
+          background:#fff; border:1px solid #D5DEEA; border-radius:18px;
+          box-shadow:0 10px 30px -14px rgba(18,35,63,.28); }
+  .ring { position:relative; width:150px; height:150px; flex:none; }
+  svg { transform:rotate(-90deg); display:block; }
+  .track { stroke:var(--track); }
+  .arc { stroke:{{COLOR}}; stroke-linecap:round; }
+  .num { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .num b { font:700 42px/1 "Bricolage Grotesque", sans-serif; letter-spacing:-.02em; }
+  .num span { font-size:12px; color:var(--muted); margin-top:2px; }
+  .txt small { display:block; font-size:13px; color:var(--muted); margin-bottom:6px; }
+  .txt strong { display:block; font:700 24px/1.15 "Bricolage Grotesque", sans-serif; color:{{COLOR}}; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="ring">
+      <svg width="150" height="150" viewBox="0 0 160 160" aria-hidden="true">
+        <circle class="track" cx="80" cy="80" r="70" fill="none" stroke-width="14"/>
+        <circle id="arc" class="arc" cx="80" cy="80" r="70" fill="none" stroke-width="14"
+                stroke-dasharray="439.82" stroke-dashoffset="439.82"/>
+      </svg>
+      <div class="num" role="img" aria-label="{{SCORE}} / 100"><b id="n">0</b><span>/ 100</span></div>
+    </div>
+    <div class="txt"><small>{{TITLE}}</small><strong>{{VERDICT}}</strong></div>
+  </div>
+<script>
+  const target = {{SCORE}}, C = 439.82;
+  const arc = document.getElementById("arc"), n = document.getElementById("n");
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function paint(v){ arc.style.strokeDashoffset = C * (1 - v/100); n.textContent = Math.round(v); }
+  if (reduce) { paint(target); }
+  else {
+    const t0 = performance.now(), dur = 900;
+    (function step(t){
+      const p = Math.min((t - t0)/dur, 1), e = 1 - Math.pow(1 - p, 3);
+      paint(target * e);
+      if (p < 1) requestAnimationFrame(step);
+    })(t0);
+  }
+</script>
+</body>
+</html>
